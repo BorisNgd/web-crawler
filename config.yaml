@@ -1,0 +1,107 @@
+# =============================================================================
+# Web Crawler — Configuration de référence
+# Copiez ce fichier en config.yaml et ajustez les valeurs.
+# Les valeurs affichées ici sont les valeurs par défaut.
+# =============================================================================
+
+# --- Paramètres principaux ---
+start_url: "https://mangriva.ca/fr"
+depth: 2                          # Profondeur max du crawl (0 = page seule)
+output_dir: "./crawled"           # Répertoire de sortie des fichiers .md
+max_pages: 200                    # Limite absolue de pages crawlées
+concurrency: 5                    # Nombre de requêtes parallèles max
+delay_between_requests: 1.0       # Délai (secondes) entre requêtes par domaine
+respect_robots_txt: true          # Respecter robots.txt (recommandé)
+user_agent: "Mozilla/5.0 (compatible; WebCrawler/1.0)"
+log_level: "DEBUG"                 # DEBUG | INFO | WARNING | ERROR
+
+# --- Rendu adaptatif ---
+adaptive_rendering: true          # Détecte automatiquement si JS est nécessaire
+force_js: false                   # Forcer Playwright pour toutes les pages
+force_static: false               # Forcer extraction statique (Trafilatura) partout
+
+# --- Paramètres Playwright / Crawl4AI ---
+js_timeout: 15000                 # Timeout (ms) pour le chargement des pages JS
+wait_for_selector: null           # Sélecteur CSS à attendre avant extraction
+                                  # Exemple: ".main-content" ou "#app"
+js_scroll_behavior: "auto"        # auto | none | custom
+custom_js_snippet: null           # JS arbitraire exécuté avant extraction
+                                  # Exemple: "document.querySelector('.cookie-accept').click();"
+
+# --- Pagination ---
+pagination:
+  enabled: true
+  mode: "auto"                    # auto | scroll | load_more | url_pattern
+  max_pages: 10                   # Profondeur max de pagination
+  load_more_selector: null        # Sélecteur CSS du bouton "Charger plus"
+                                  # Exemple: "button.load-more"
+  url_pattern: null               # Pattern URL pour pagination classique
+                                  # Exemple: "?page={n}" ou "/page/{n}/"
+  scroll_pause: 2.0               # Pause (secondes) entre scroll/clicks
+
+# --- Authentification ---
+auth:
+  type: "none"                    # none | cookie | form | header
+
+  # -- Auth par cookie --
+  # type: "cookie"
+  # cookies:
+  #   - name: "session"
+  #     value: "votre-token-ici"
+  #     domain: ".example.com"
+  #     path: "/"
+  #     secure: false
+  #     http_only: false
+
+  # -- Auth par formulaire --
+  # type: "form"
+  # login_url: "https://example.com/login"
+  # username_selector: "#username"        # Sélecteur CSS du champ email/login
+  # password_selector: "#password"        # Sélecteur CSS du champ mot de passe
+  # submit_selector: "button[type=submit]"
+  # username: "user@example.com"
+  # password: "votre-mot-de-passe"
+  # success_selector: ".dashboard"        # Élément prouvant que le login a réussi
+
+  # -- Auth par en-têtes HTTP --
+  # type: "header"
+  # headers:
+  #   Authorization: "Bearer votre-token"
+  #   X-API-Key: "votre-cle-api"
+
+# --- Filtrage des URLs ---
+url_filters:
+  include_domains: []             # Vide = domaine de start_url uniquement
+                                  # Exemple: ["example.com", "blog.example.com"]
+  exclude_patterns:               # Regex Python (re.search) — URLs à ignorer
+    - ".*\\.pdf$"
+    - ".*\\.zip$"
+    - ".*/tag/.*"
+    - ".*/feed.*"
+    - ".*\\?.*print.*"
+  include_patterns: []            # Si non vide: whitelist (prime sur exclude)
+
+# --- Extraction du contenu ---
+extraction:
+  content_filter: "none"       # none | bm25 | pruning
+                                  # pruning: supprime les blocs de faible densité
+                                  # bm25: filtrage par pertinence (nécessite une requête)
+  bm25_threshold: 1.2             # Seuil BM25 (mode bm25 uniquement)
+  css_selector: "article"              # Limiter l'extraction à un élément spécifique
+                                  # Exemple: "article.main-content"
+  exclude_selectors:       []       # Éléments à supprimer avant extraction
+  include_images: false           # Inclure les images (![alt](url)) dans le Markdown
+  include_links: true             # Conserver les liens [texte](url) dans le Markdown
+
+# --- Format de sortie ---
+output:
+  filename_strategy: "slug"       # slug | hash | url_path
+                                  # slug: titre-de-la-page.md (lisible)
+                                  # hash: a3f9b12c4e8d.md (court, unique)
+                                  # url_path: miroir arborescence URL
+  overwrite: true                 # Re-crawl et écraser les fichiers existants
+  add_frontmatter: true           # Ajouter le bloc YAML frontmatter
+  extra_frontmatter_fields: {}    # Champs YAML supplémentaires à injecter
+                                  # Exemple:
+                                  #   project: "mon-projet"
+                                  #   environment: "prod"

@@ -1,0 +1,14 @@
+---
+url: https://sjsr.ca/wp-content/plugins/wp-accessibility/js/wp-accessibility.min.js?ver=2.3.2
+title: sjsr.ca
+date_crawled: '2026-03-25T01:41:30Z'
+source_domain: sjsr.ca
+depth: 1
+parent_url: https://sjsr.ca/
+word_count: 29
+rendering_mode: static
+---
+
+`"+i.getAttribute("src").replace(wpa.ldHome,"")+"`
+
+");let n=document.body.className.split(/\s+/),l="";n.forEach(p=>{p.match(/postid-/gi)&&(l=p.replace("postid-","",p)),p.match(/page-id-/gi)&&(l=p.replace("page-id-","",p))});let b=new URL(e);b.searchParams.set("referrer",l),b.toString(),[...i.classList].forEach(p=>{u.classList.add(p)}),c(i,u),i.setAttribute("alt",""),i.setAttribute("class","");let w=document.createElement("a");w.setAttribute("href",b),w.classList.add("longdesc-link");let f=document.createElement("span");if(f.classList.add("screen-reader-text"),f.textContent=" of "+s,w.textContent="Description",w.appendChild(f),wpa.ldType==="link")u.insertAdjacentElement("beforeend",w);else{u.insertAdjacentHTML("beforeend",'"),u.insertAdjacentHTML("beforeend",'');let p=u.querySelector(".longdesc");p.style.display="none",fetch(e).then(x=>{if(x.ok)return x.text();p.insertAdjacentHTML("beforeend",r)}).then(x=>{let E=new DOMParser().parseFromString(x,"text/html");p.insertAdjacentElement("beforeend",E.querySelector("#desc_"+a))}),u.querySelector("button").addEventListener("click",function(x){p.checkVisibility()?(this.setAttribute("aria-expanded","false"),p.style.display="none"):(this.setAttribute("aria-expanded","true"),p.style.display="block")})}},c=(i,a)=>{i.parentElement.insertBefore(a,i),a.appendChild(i)},t=document.querySelectorAll("img[longdesc]");if(wpa.ldType==="link"){t.length>0&&t.forEach(a=>{let e=document.createElement("div");e.classList.add("wpa-ld");let r=a.getAttribute("longdesc"),u=a.getAttribute("alt"),s=[...a.classList];c(a,e),s.forEach(b=>{e.classList.add(b)}),a.setAttribute("class","");let n=document.createElement("a");n.setAttribute("href",r),n.classList.add("longdesc-link");let l=document.createElement("span");l.classList.add("screen-reader-text"),l.textContent=" of "+u,n.textContent="Description",n.appendChild(l),a.insertAdjacentElement("afterend",n)});let i=document.querySelectorAll("figure.is-style-longdesc");i.length>0&&i.forEach(a=>{let e=a.querySelector("img");o(e)})}else{t.length>0&&t.forEach(a=>{o(a)});let i=document.querySelectorAll("figure.is-style-longdesc");i.length>0&&i.forEach(a=>{let e=a.querySelector("img");o(e)})}}})();function L(m){let y="";if(m.nodeType===3||m.nodeType===4)y=m.nodeValue;else if(m.nodeType===1&&(m.tagName.toLowerCase()=="img"||m.tagName.toLowerCase()=="area"||m.tagName.toLowerCase()=="input"&&m.getAttribute("type")&&m.getAttribute("type").toLowerCase()=="image"))y=m.getAttribute("alt")||"";else if(m.nodeType===1&&!m.tagName.match(/^(script|style)$/i)){let h=m.childNodes;for(let A=0,c=h.length;A

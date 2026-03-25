@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  # -----------------------------------------------------------------------
+  # Production — image complète, pas de rechargement automatique
+  # Usage: docker-compose up crawler
+  # -----------------------------------------------------------------------
+  crawler:
+    build: .
+    image: web-crawler:latest
+    volumes:
+      - ./crawled:/app/crawled
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      --url ${START_URL:-https://example.com}
+      --depth ${DEPTH:-2}
+      --output /app/crawled
+      --config /app/config.yaml
+      --log-level ${LOG_LEVEL:-INFO}
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: "2.0"
+
+  # -----------------------------------------------------------------------
+  # Développement — rechargement automatique sur modification du code source
+  # Usage: docker-compose up crawler-dev
+  #   ou:  START_URL=https://example.com docker-compose up crawler-dev
+  # -----------------------------------------------------------------------
+  crawler-dev:
+    build: .
+    image: web-crawler:latest
+    entrypoint: ""
+    volumes:
+      # Monte le code source en live — chaque modification est immédiatement visible
+      - .:/app
+      # Empêche l'écrasement du venv/cache Playwright dans le conteneur
+      - /app/__pycache__
+      - crawler_playwright:/root/.cache/ms-playwright
+      # Sortie markdown et config persistées sur l'hôte
+      - ./crawled:/app/crawled
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WATCHFILES_FORCE_POLLING=${WATCHFILES_FORCE_POLLING:-false}
+    # watchfiles relance automatiquement crawl.py dès qu'un .py ou .yaml change
+    command: >
+      python -m watchfiles
+        --filter python
+        "python crawl.py
+          --url ${START_URL:-https://example.com}
+          --depth ${DEPTH:-2}
+          --output /app/crawled
+          --config /app/config.yaml
+          --log-level ${LOG_LEVEL:-DEBUG}"
+        /app/crawler /app/output /app/utils /app/crawl.py
+    develop:
+      watch:
+        - action: sync
+          path: ./crawler
+          target: /app/crawler
+        - action: sync
+          path: ./output
+          target: /app/output
+        - action: sync
+          path: ./utils
+          target: /app/utils
+        - action: sync
+          path: ./crawl.py
+          target: /app/crawl.py
+        - action: sync+restart
+          path: ./config.yaml
+          target: /app/config.yaml
+        - action: rebuild
+          path: ./requirements.txt
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: "2.0"
+
+volumes:
+  crawler_playwright:  # Cache des navigateurs Playwright partagé entre rebuilds
