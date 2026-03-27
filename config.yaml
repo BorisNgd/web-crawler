@@ -5,7 +5,7 @@
 # =============================================================================
 
 # --- Paramètres principaux ---
-start_url: "https://mangriva.ca/fr"
+start_url: "https://sjsr.ca/"  # URL de départ du crawl
 depth: 2                          # Profondeur max du crawl (0 = page seule)
 output_dir: "./crawled"           # Répertoire de sortie des fichiers .md
 max_pages: 200                    # Limite absolue de pages crawlées
@@ -87,7 +87,7 @@ extraction:
                                   # pruning: supprime les blocs de faible densité
                                   # bm25: filtrage par pertinence (nécessite une requête)
   bm25_threshold: 1.2             # Seuil BM25 (mode bm25 uniquement)
-  css_selector: "article"              # Limiter l'extraction à un élément spécifique
+  css_selector: "article, main, [role=main], .entry-content, .fl-builder-content, .elementor-section-wrap, #content"  # Cibler le contenu principal
                                   # Exemple: "article.main-content"
   exclude_selectors:       []       # Éléments à supprimer avant extraction
   include_images: false           # Inclure les images (![alt](url)) dans le Markdown

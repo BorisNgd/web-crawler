@@ -254,6 +254,7 @@ class Orchestrator:
                 result = await trafilatura_runner.run(
                     url=url,
                     user_agent=self.config.user_agent,
+                    css_selector=self.config.extraction.css_selector,
                     include_links=self.config.extraction.include_links,
                     include_images=self.config.extraction.include_images,
                 )

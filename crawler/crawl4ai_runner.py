@@ -63,11 +63,13 @@ def _build_run_config(config: "CrawlerConfig", url: str):
         from crawl4ai.content_filter_strategy import PruningContentFilter
         content_filter = PruningContentFilter(threshold=0.45)
 
+    # content_filter belongs to DefaultMarkdownGenerator, not CrawlerRunConfig
     md_generator = DefaultMarkdownGenerator(
+        content_filter=content_filter,
         options={
             "ignore_links": not config.extraction.include_links,
             "ignore_images": not config.extraction.include_images,
-        }
+        },
     )
 
     excluded = ",".join(config.extraction.exclude_selectors) if config.extraction.exclude_selectors else None
@@ -75,9 +77,11 @@ def _build_run_config(config: "CrawlerConfig", url: str):
     # JS snippet for scroll behavior
     js_code = config.custom_js_snippet
     if not js_code and config.js_scroll_behavior == "auto":
+        # Must NOT use top-level await — wrap in IIFE for compatibility
         js_code = (
+            "(function(){"
             "window.scrollTo(0, document.body.scrollHeight);"
-            "await new Promise(r => setTimeout(r, 1500));"
+            "})();"
         )
 
     return CrawlerRunConfig(
@@ -85,7 +89,6 @@ def _build_run_config(config: "CrawlerConfig", url: str):
         wait_for=config.wait_for_selector,
         js_code=js_code,
         word_count_threshold=10,
-        content_filter=content_filter,
         markdown_generator=md_generator,
         css_selector=config.extraction.css_selector,
         excluded_selector=excluded,
